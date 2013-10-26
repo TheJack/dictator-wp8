@@ -13,7 +13,7 @@ namespace DictatorApp
 {
     class NetworkManager
     {
-        public static readonly string HOST_NAME = /*"10.255.1.18";/*/"10.0.249.104";
+        public static readonly string HOST_NAME = "10.255.1.18";//*/"10.0.249.104";
         public const int PORT_NUMBER = 3001;
         public const int TIMEOUT_MILLISECONDS = 5000;
         static Socket _socket;
@@ -109,8 +109,8 @@ namespace DictatorApp
         static void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             Debug.WriteLine("receive worker started");
-
-            while (!worker.CancellationPending)
+            BackgroundWorker sndr = (BackgroundWorker)sender;
+            while (!sndr.CancellationPending)
             {
                 SocketAsyncEventArgs args = new SocketAsyncEventArgs();
                 args.RemoteEndPoint = _socket.RemoteEndPoint;
@@ -229,6 +229,7 @@ namespace DictatorApp
 
         public static string Send(string data)
         {
+            data = data + "\n";
             string response = "Operation Timeout";
 
             // We are re-using the _socket object initialized in the Connect method
@@ -272,8 +273,8 @@ namespace DictatorApp
             connectWorker.DoWork += (sender, e) =>
             {
                 Connect();
-                Send("set_name," + username + "\n");
-                Send("play\n");
+                Send("set_name," + username);
+                Send("play");
             };
             connectWorker.RunWorkerAsync();
         }

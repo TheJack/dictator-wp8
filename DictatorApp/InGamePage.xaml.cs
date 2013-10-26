@@ -50,7 +50,7 @@ namespace DictatorApp
             NetworkManager.GameEnded -= NetworkManager_GameEnded;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                NavigationService.Navigate(new Uri("/EndGame.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri("/EndGamePage.xaml", UriKind.Relative));
             });
         }
 
@@ -157,7 +157,7 @@ namespace DictatorApp
             typingWorker.DoWork += (s, a) =>
             {
                 BackgroundWorker sndr = (BackgroundWorker)s;
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
                 if (!sndr.CancellationPending)
                 {
                     isTyping = false;

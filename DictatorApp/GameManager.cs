@@ -22,6 +22,8 @@ namespace DictatorApp
             this.typing = false;
         }
 
+        public int Place { get; set; }
+
         public string Name
         {
             get { return name; }
@@ -155,7 +157,7 @@ namespace DictatorApp
 
         public static void Answer(int currentRound, string word)
         {
-            NetworkManager.Send("answer," + currentRound + "," + word + "\n");
+            NetworkManager.Send("answer," + currentRound + "," + word);
         }
     }
 }
