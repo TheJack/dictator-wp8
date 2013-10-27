@@ -25,10 +25,12 @@ namespace DictatorApp
                 return y.Score.CompareTo(x.Score);
             }
         }
-
+         
         protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
+        { 
             base.OnNavigatedTo(e);
+            NavigationService.RemoveBackEntry();
+
             PlayerStats[] stats = GameManager.Stats.ToArray();
             Array.Sort(stats, new comparer());
             for (int i = 0; i < stats.Length; i++)
@@ -37,6 +39,13 @@ namespace DictatorApp
             }
 
             this.OpponentsScoreControl.ItemsSource = stats;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            NavigationService.RemoveBackEntry();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

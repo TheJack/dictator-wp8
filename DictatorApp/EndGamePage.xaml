@@ -29,7 +29,7 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel Orientation="Vertical">
-            <ItemsControl x:Name="OpponentsScoreControl">
+                <ItemsControl x:Name="OpponentsScoreControl">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" />
@@ -38,14 +38,14 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Place, StringFormat='{}{0}. '}"></TextBlock>
-                            <TextBlock Text="{Binding Name, StringFormat='{}{0}: '}"></TextBlock>
-                            <TextBlock Text="{Binding Score, StringFormat='{}{0} pts'}"></TextBlock>
+                                <TextBlock Text="{Binding Place, StringFormat='{}{0}. '}" Style="{StaticResource PhoneTextTitle2Style}"></TextBlock>
+                                <TextBlock Text="{Binding Name, StringFormat='{}{0}: '}" Style="{StaticResource PhoneTextTitle2Style}"></TextBlock>
+                                <TextBlock Text="{Binding Score, StringFormat='{}{0} pts'}" Style="{StaticResource PhoneTextTitle2Style}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-                <Button Click="Button_Click">go back</Button>
+                <Button Click="Button_Click" Margin="0,12,0,0">go back</Button>
             </StackPanel>
         </Grid>
     </Grid>

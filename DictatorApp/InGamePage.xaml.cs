@@ -24,6 +24,7 @@ namespace DictatorApp
         BackgroundWorker worker;
         static readonly SolidColorBrush greenBrush = new SolidColorBrush(Colors.Green);
         static readonly SolidColorBrush redBrush = new SolidColorBrush(Colors.Red);
+        readonly object syncObj = new object();
         static Brush defaultBrush;
 
         public InGamePage()
@@ -34,6 +35,7 @@ namespace DictatorApp
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            NavigationService.RemoveBackEntry();
 
             defaultBrush = this.TimerTextBlock.Foreground;
             NetworkManager.GameEnded += NetworkManager_GameEnded;
@@ -66,13 +68,17 @@ namespace DictatorApp
             {
                 if (currentRound == null)
                 {
-                    currentRound = GameManager.GetNextRound();
+                    lock (syncObj)
+                    {
+                        currentRound = GameManager.GetNextRound();
+                    }
                     if (currentRound != null)
                     {
                         currentRound.StartedAt = DateTime.Now;
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             this.AnswerTextBox.Text = "";
+                            this.AnswerTextBox.IsEnabled = true;
                             this.RoundTextBlock.Text = "Round " + currentRound.RoundNumber;
                         });
                         SpeekCurrentRound();
@@ -84,7 +90,10 @@ namespace DictatorApp
                     {
                         if ((DateTime.Now - currentRound.EndedAt) > TimeSpan.FromSeconds(1))
                         {
-                            currentRound = null;
+                            lock (syncObj)
+                            {
+                                currentRound = null;
+                            }
                         }
                     }
                     else if (currentRound.StartedAt.AddSeconds(currentRound.Timeout) < DateTime.Now)
@@ -93,7 +102,10 @@ namespace DictatorApp
                         {
                             TimerTextBlock.Text = "00:00";
                         });
-                        currentRound.EndedAt = DateTime.Now;
+                        lock (syncObj)
+                        {
+                            currentRound.EndedAt = DateTime.Now;
+                        }
                         //TimerTextBlock.Foreground = new SolidColorBrush(Colors.Red);
                     }
                     else
@@ -126,14 +138,17 @@ namespace DictatorApp
             synth.Dispose();
         }
 
-        //TODO: currentRound locks
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            if (currentRound != null && currentRound.EndedAt == DateTime.MinValue)
+            lock (syncObj)
             {
-                GameManager.Answer(currentRound.RoundNumber, this.AnswerTextBox.Text);
-                currentRound.Answered = true;
-                this.TimerTextBlock.Foreground = greenBrush;
+                if (currentRound != null && currentRound.EndedAt == DateTime.MinValue && !currentRound.Answered)
+                {
+                    GameManager.Answer(currentRound.RoundNumber, this.AnswerTextBox.Text);
+                    currentRound.Answered = true;
+                    this.AnswerTextBox.IsEnabled = false;
+                    this.TimerTextBlock.Foreground = greenBrush;
+                }
             }
         }
 

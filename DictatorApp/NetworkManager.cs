@@ -13,7 +13,7 @@ namespace DictatorApp
 {
     class NetworkManager
     {
-        public static readonly string HOST_NAME = "10.255.1.18";//*/"10.0.249.104";
+        public static readonly string HOST_NAME = /*"10.255.1.18";//*/"10.0.249.107";
         public const int PORT_NUMBER = 3001;
         public const int TIMEOUT_MILLISECONDS = 5000;
         static Socket _socket;
